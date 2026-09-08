@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# lahgtna — Gulf-Arabic TTS (OmniVoice fine-tune)
+#
+# Exact versions of the environment the checkpoint in
+# "lahgtna finetuned/final_model" was trained and benchmarked with.
+#
+#   Python 3.12.14   (omnivoice requires >=3.10; 3.13 is untested)
+#   macOS 26.6 arm64 / Apple M3 Ultra — CPU training, MPS inference
+#
+# Install:
+#   python3.12 -m venv .venv312
+#   ./.venv312/bin/pip install -r requirements.txt
+#
+# NOTE: the previous version of this file listed standard-library modules
+# (os, sys, io, glob, typing, pathlib, dataclasses). Those are not installable
+# distributions and made `pip install -r requirements.txt` fail. They are gone.
+# ---------------------------------------------------------------------------
+
+# --- core model stack ------------------------------------------------------
+# omnivoice pulls torch/torchaudio/transformers/accelerate/librosa/pydub/
+# gradio/webdataset/tensorboardx itself; they are pinned below anyway so the
+# environment is byte-for-byte reproducible.
+omnivoice==0.2.1
+torch==2.8.0
+torchaudio==2.8.0
+transformers==5.16.1
+accelerate==1.14.0
+tokenizers==0.23.1
+safetensors==0.8.0
+huggingface_hub==1.29.0
+
+# --- audio i/o and DSP -----------------------------------------------------
+soundfile==0.14.0          # read/write wav, used by every script
+librosa==1.0.0             # omnivoice resampling / feature helpers
+soxr==1.1.0                # librosa's resampler backend
+pydub==0.25.1              # omnivoice audio post-processing
+scipy==1.18.1
+numpy==2.5.2
+
+# --- training data pipeline (train_lahgtna.py) -----------------------------
+pyarrow==25.0.1            # streams the datav2/*.parquet shards
+tqdm==4.70.0
+webdataset==1.0.2          # omnivoice dataset backend
+tensorboardX==2.6.5        # omnivoice trainer import
+
+# --- inference API (lahgtna_api.py) ----------------------------------------
+Flask==3.1.3
+Werkzeug==3.1.8
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+itsdangerous==2.2.0
+blinker==1.9.0
+click==8.5.0
+
+# --- API client / test harness (api_lahga_test.py) -------------------------
+requests==2.34.2
+urllib3==2.7.0
+certifi==2026.7.22
+charset-normalizer==3.5.1
+idna==3.19
+
+# --- hard dependency of omnivoice (its bundled demo) -----------------------
+# Not imported by any script here, but `pip install omnivoice` requires it.
+gradio==6.26.0
+
+# --- pinned transitives that decide numerical / loading behaviour ----------
+filelock==3.32.4
+fsspec==2026.7.0
+hf-xet==1.6.0
+regex==2026.7.19
+packaging==26.3
+PyYAML==6.0.3
+sympy==1.14.0
+networkx==3.6.1
+mpmath==1.3.0
+typing_extensions==4.16.0
+numba==0.67.0
+llvmlite==0.49.0
+joblib==1.5.3
+scikit-learn==1.9.0
+threadpoolctl==3.6.0
+decorator==5.3.1
+lazy-loader==0.5
+pooch==1.9.0
+platformdirs==4.11.4
+msgpack==1.2.2
+braceexpand==0.1.7
